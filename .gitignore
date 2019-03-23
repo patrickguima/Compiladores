@@ -1,0 +1,11 @@
+JavaCompiler/AnaliseLexica.class
+JavaCompiler/ArvoreSintatica.class
+JavaCompiler/CodeGen.class
+JavaCompiler/Compilador.class
+JavaCompiler/Exp.class
+JavaCompiler/Mult.class
+JavaCompiler/Num.class
+JavaCompiler/Operador.class
+JavaCompiler/Parser.class
+JavaCompiler/Soma.class
+JavaCompiler/Parser$1.class
