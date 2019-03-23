@@ -1,13 +1,13 @@
-JavaCompiler/AnaliseLexica.class
-JavaCompiler/ArvoreSintatica.class
-JavaCompiler/CodeGen.class
-JavaCompiler/Compilador.class
-JavaCompiler/Exp.class
-JavaCompiler/Mult.class
-JavaCompiler/Num.class
-JavaCompiler/Operador.class
-JavaCompiler/Parser.class
-JavaCompiler/Soma.class
-JavaCompiler/Parser$1.class
-JavaCompiler/Token.class
-JavaCompiler/TokenType.class
+Trabalho 1/AnaliseLexica.class
+Trabalho 1/ArvoreSintatica.class
+Trabalho 1/CodeGen.class
+Trabalho 1/Compilador.class
+Trabalho 1r/Exp.class
+Trabalho 1/Mult.class
+Trabalho 1/Num.class
+Trabalho 1/Operador.class
+Trabalho 1/Parser.class
+Trabalho 1/Soma.class
+Trabalho 1/Parser$1.class
+Trabalho 1/Token.class
+Trabalho 1/TokenType.class
