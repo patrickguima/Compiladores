@@ -10,3 +10,4 @@ JavaCompiler/Parser.class
 JavaCompiler/Soma.class
 JavaCompiler/Parser$1.class
 JavaCompiler/Token.class
+JavaCompiler/TokenType.class
