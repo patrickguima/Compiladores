@@ -3,7 +3,7 @@
 Aula 19/03
 
 **Exercicios**   
-* adicionar numeros naturais (DONE).
+- adicionar numeros naturais (DONE).
 - adcionar subtraçao e divisao. 
 - substituir o back end por um interpretador.    
 
