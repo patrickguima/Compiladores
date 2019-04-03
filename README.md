@@ -24,7 +24,7 @@ Implementar um parser para a linguagem Lugosi usando a ferramente javacc e desen
 quarta-feira (10/04) não havera aula!!!!
 
 
-Intruções:  
+Instruções:  
 `javacc Lugosi.jj`  
 `javac *.java`  
 `java Lugosi test.lug`
