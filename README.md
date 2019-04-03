@@ -7,7 +7,7 @@ Exercicios
 2. adcionar subtraçao e divisao.
 3. substituir o back end por um interpretador.
 
-**TRABALHO - 1 **
+**TRABALHO - 1**
 
 Implementar uma maquina de pilha que execute o codigo gerado pelo compilador didatico( qualquer linguagem)
 
