@@ -3,9 +3,9 @@
 Aula 19/03
 
 Exercicios  
-*adicionar numeros naturais (DONE).
-*adcionar subtraçao e divisao.
-*substituir o back end por um interpretador.
+*adicionar numeros naturais (DONE).  
+*adcionar subtraçao e divisao.  
+*substituir o back end por um interpretador.  
 
 **TRABALHO - 1**
 
