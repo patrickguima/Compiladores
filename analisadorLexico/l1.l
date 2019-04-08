@@ -1,11 +1,13 @@
 DIGITO	[0-9]
 LETRA	[a-zA-Z]
-PALAVRARESERVADA "main"|"void"|"int"|"float"|"char"|"bool"|"true"|"false"
-COMANDO "+"|"-"|":="|"if"|"while"|"return"|"do"|"skip"
+PALAVRARESERVADA "main"|"void"|"int"|"float"|"char"|"bool"|"true"|"false"|"and"
+COMANDO "+"|"-"|"/"|"*"|":="|"if"|"while"|"return"|"do"|"skip"
 PARENTESES "("|")"
 CHAVES "{"|"}"
 ID	{LETRA}({LETRA}|{DIGITO})*
 FIMLINHA ";"
+SEPARACAO ","
+
 %%
 {PALAVRARESERVADA} {printf("palavra reservada: %s\n", yytext);}
 {PARENTESES} {printf("parenteses: %s\n", yytext);}
@@ -15,6 +17,7 @@ FIMLINHA ";"
 {DIGITO}+		{printf("Inteiro: %s\n",yytext);}
 {DIGITO}+"."{DIGITO}+	{printf("Real: %s\n",yytext);} 
 {ID}			{printf("var: %s\n",yytext);}
+{SEPARACAO} {printf("separacao: %s\n",yytext);}
 
 %%
 int yywrap();
