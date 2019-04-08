@@ -15,6 +15,17 @@ Implementar uma maquina de pilha que execute o codigo gerado pelo compilador did
 Analisador Léxico para linguagem Mojica.
 Criar as expressões regulares que classificam todas as palavras no código.
 
+Como executar:
+1 - Executar o Flex para o arquivo de definição (supondo que seu nome seja lex01.l):
+	`$ flex lex01.l`
+
+	Isto produzirá um arquivo fonte em linguagem C que equivale ao scanner desejado. O arquivo C produzido tem
+	sempre o nome lex.yy.c.
+2 - Compilar o código C gerado pelo Flex:
+	`$ gcc lex.yy.c -o lex01`
+3-	Executar o scanner gerado:
+	`$ ./lex01`
+
 
 **TRABALHO - 3**    
 
