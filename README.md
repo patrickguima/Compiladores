@@ -11,9 +11,9 @@ Aula 19/03
 
 Implementar uma maquina de pilha que execute o codigo gerado pelo compilador didatico( qualquer linguagem)
 
-**TRABALHO - 2**    
-
-
+**TRABALHO - 2** 
+Analisador Léxico para linguagem Mojica.
+Criar as expressões regulares que classificam todas as palavras no código.
 
 
 **TRABALHO - 3**    
