@@ -1,5 +1,11 @@
 # Compiladores
 
+**DATAS IMPORTANTES**  
+17/04 - Duvidas dos Trabalhos  
+23/04 - Ultima Materia  
+24/04 - Apresentação dos Trabalhos
+30/04 - Prova
+
 Aula 19/03
 
 **Exercicios**   
