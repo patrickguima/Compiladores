@@ -40,6 +40,8 @@ TOKEN :
 |<FUNCTION:"function">
 |<VIRGULA:",">
 |<TOKEN_NUMLITERAL:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
+|<TRUE: "true">
+|<FALSE: "false">
 
 }
 
@@ -69,8 +71,64 @@ void VarDecl():
 
 }
 
+void SeqComandos():
+{}
+{
+	(comando())*
 
 
+}
+void comando():
+{}
+{
+	(<TOKEN_ID> comandoNR())
+  	|(<IF> <APARENTESES> exp() <FPARENTESES> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+  	|(<WHILE> <APARENTESES> exp() <FPARENTESES> <DO> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+  	|(<DO> <ACHAVES> SeqComandos() <FCHAVES> <WHILE> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
+  	|(<RETURN> exp() <PONTOVIR>)
+  	|(<PRINT> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
+}
+
+// pra tirar a recursão
+void comandoNR():
+{}
+{
+	(<ATRIBUICAO> exp() <PONTOVIR>) 
+  	|(<APARENTESES> listaExp() <FPARENTESES> <PONTOVIR>)
+
+}
+
+void exp():
+{}
+{
+	(<APARENTESES> exp() <OP> exp() <FPARENTESES>)| fator()	
+}
+
+void listaExp():
+{}
+{
+  exp() listaExpNR()
+}
+
+void listaExpNR():
+{}
+{
+  (<VIRGULA> exp() listaExpNR())?
+}
+
+
+void fator():
+{}
+{
+	(<TOKEN_ID> fatNR())
+	|<TOKEN_NUMLITERAL> | <TRUE> | <FALSE> 
+}
+
+void fatNR():
+{}
+{
+	(<APARENTESES> <FPARENTESES>)?
+}
 
 
 void Main ():
@@ -79,7 +137,7 @@ void Main ():
  <MAIN> <ACHAVES> 
  
   VarDecl()
- // SeqComandos()
+  SeqComandos()
 
  <FCHAVES>
 

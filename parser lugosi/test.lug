@@ -1,1 +1,5 @@
-main{ var int valor ;}
+main{ 
+var int a;
+a := 10;
+
+}
