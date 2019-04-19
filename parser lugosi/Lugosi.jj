@@ -1,0 +1,91 @@
+PARSER_BEGIN(Lugosi)
+import java.io.*;
+public class Lugosi {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+    Lugosi parser = new Lugosi(new FileInputStream(args[0]));
+    parser.Lugosi();
+  }
+
+}
+
+PARSER_END(Lugosi)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  <MAIN: "main">
+| <ACHAVES: "{">
+| <FCHAVES: "}">
+|<VAR: "var">
+|<PONTOVIR: ";">
+|<TIPO: ("int" | "bool")>
+|<TOKEN_ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_")*>
+|<IF: "if">
+|<WHILE: "while">
+|<DO: "do">
+|<RETURN: "return">
+|<PRINT: "print">
+|<ATRIBUICAO:":=">
+|<APARENTESES:"(">
+|<FPARENTESES:")">
+|<FUNCTION:"function">
+|<VIRGULA:",">
+|<TOKEN_NUMLITERAL:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
+
+}
+
+TOKEN :
+{
+  <NUM : (["0"-"9"])+>
+ |<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+ |<OP: "+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==">
+ 
+
+}
+
+
+void Lugosi () :
+{}
+{ 
+
+  Main() 
+//Func()?
+  <EOF> 
+}
+
+void VarDecl():
+{}
+{
+	  (<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
+
+}
+
+
+
+
+
+void Main ():
+{}
+{
+ <MAIN> <ACHAVES> 
+ 
+  VarDecl()
+ // SeqComandos()
+
+ <FCHAVES>
+
+}
+
+
+
+
+
