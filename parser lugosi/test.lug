@@ -1,5 +1,11 @@
 main{ 
-var int a;
-a := 10;
+var int Valor;
+var bool FLAG;
+Valor := 0;
+FLAG := true;
 
+while ( (Valor < 10)) 
+do {
+	Valor := 1;
+};
 }

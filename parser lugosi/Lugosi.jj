@@ -28,7 +28,6 @@ TOKEN :
 |<VAR: "var">
 |<PONTOVIR: ";">
 |<TIPO: ("int" | "bool")>
-|<TOKEN_ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_")*>
 |<IF: "if">
 |<WHILE: "while">
 |<DO: "do">
@@ -42,6 +41,7 @@ TOKEN :
 |<TOKEN_NUMLITERAL:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
 |<TRUE: "true">
 |<FALSE: "false">
+|<TOKEN_ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_")*>
 
 }
 
@@ -67,7 +67,7 @@ void Lugosi () :
 void VarDecl():
 {}
 {
-	  (<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
+	(<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
 
 }
 
@@ -88,6 +88,19 @@ void comando():
   	|(<RETURN> exp() <PONTOVIR>)
   	|(<PRINT> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
 }
+
+void Func():
+{}
+{
+  (<FUNCTION> <TIPO> <TOKEN_ID> <APARENTESES> (listaArg())? <FPARENTESES> <ACHAVES> VarDecl() SeqComandos() <FCHAVES>)+
+}
+
+void listaArg():
+{}
+{
+  <TIPO> <TOKEN_ID> (<PONTOVIR> listaArg())?
+}
+
 
 // pra tirar a recursão
 void comandoNR():
@@ -127,7 +140,7 @@ void fator():
 void fatNR():
 {}
 {
-	(<APARENTESES> <FPARENTESES>)?
+	(<APARENTESES> (listaExp())?  <FPARENTESES>)?
 }
 
 
