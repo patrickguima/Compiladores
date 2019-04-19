@@ -1,1 +1,1 @@
-main{var bool ;}
+main{ var int valor ;}

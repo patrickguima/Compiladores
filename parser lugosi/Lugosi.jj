@@ -27,15 +27,28 @@ TOKEN :
 | <FCHAVES: "}">
 |<VAR: "var">
 |<PONTOVIR: ";">
+|<TIPO: ("int" | "bool")>
+|<TOKEN_ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_")*>
+|<IF: "if">
+|<WHILE: "while">
+|<DO: "do">
+|<RETURN: "return">
+|<PRINT: "print">
+|<ATRIBUICAO:":=">
+|<APARENTESES:"(">
+|<FPARENTESES:")">
+|<FUNCTION:"function">
+|<VIRGULA:",">
+|<TOKEN_NUMLITERAL:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
 
 }
 
 TOKEN :
 {
   <NUM : (["0"-"9"])+>
- |< ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
- |< OP: "+" | "-" | "*" | "/" | "&& " | "||" | "<" | ">" | "==">
- |< TIPO: "int" | "bool">
+ |<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+ |<OP: "+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==">
+ 
 
 }
 
@@ -52,9 +65,27 @@ void Lugosi () :
 void VarDecl():
 {}
 {
-	(<VAR> <TIPO> <PONTOVIR>)*
+	  (<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
 
 }
+void SeqComandos():
+{}
+{
+	(comando())*
+
+}
+
+void comando():
+{}
+{
+
+
+
+
+
+}
+
+
 
 void Main ():
 {}
