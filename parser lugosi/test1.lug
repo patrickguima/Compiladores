@@ -1,0 +1,21 @@
+main{
+    var bool B;
+    B:= true;
+
+    var int J;
+    J:=1;
+
+    if((B == true)){
+        J:= J + 1;
+    };
+
+    if((B == false)){
+        testeBool();
+    };
+}
+
+function bool testeBool(){
+    var int teste;
+
+    print(1);
+}
