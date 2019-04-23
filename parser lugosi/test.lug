@@ -1,11 +1,14 @@
 main{ 
 var int Valor;
 var bool FLAG;
-Valor := 0;
+var int Aa_;
+Valor := 1000;
 FLAG := true;
 
-while ( (Valor < 10)) 
+while ( true) 
 do {
-	Valor := 1;
+	Valor := ((valor + 1.99) / 10.1E-3);
+	Aa_ := ((20*2.05) / (2+2));
 };
 }
+
