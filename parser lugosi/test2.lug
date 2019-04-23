@@ -1,0 +1,14 @@
+main{
+    var int NUM;
+    var bool FLAG;
+
+    NUM := 3;
+    FLAG := false;
+    
+    
+    do {
+        print(FLAG);
+        NUM := (NUM - 1);
+    }while((NUM > 0));
+    
+}
