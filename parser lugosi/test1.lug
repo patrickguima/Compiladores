@@ -1,16 +1,18 @@
 main{
     var bool B;
-    B:= true;
-
+    
     var int J;
-    J:=1;
+
+    B := true;
+
+    J := 1;
 
     if((B == true)){
-        J:= J + 1;
+        J := (J + 1);
     };
 
     if((B == false)){
-        testeBool();
+       B := true;
     };
 }
 
