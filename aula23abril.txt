@@ -1,0 +1,55 @@
+23/4
+
+Caderno gosmão
+...
+
+Ex
+
+S-> aABe
+A-> Abc | b
+B-> d
+
+entrada: "abbcde". Resposta = aAbcde ->aAde -> aABe -> S
+pega o maior subconjunto possível aplicavel no lado direito, visando chegar na regra inicial
+
+ANÁLISE EMPILHAR/REDUZIR === se cair na prova, vai ser esse jeito de bottom-up
+-Técnica feral para implementar analisadores Bottom Up
+-Usamos uma pilha explícita;
+-a pilha começa vazia;
+-a cada passo de reconhecimento, tentamos reconhecer no topo da pilha o lado direito de uma regra;
+-em caso de reconhecimento, os símbolos no topo da pilha são desempilhados substituídos pelo não terminal correspondente.
+-se não for possível reduzir, empilhamos um símbolo da entrada e testa-se fazer a redução novamente
+- a analise termina quando o símbolo inicial da gramática estiver no topo da pilha E a entrada estiver vazia.
+
+Exemplo:
+
+E->  E + E | E * E | (E) | id
+
+PILHA       | ENTRADA       |AÇÃO
+$           |     id*id+id $| E
+$id         |       *id+id $| R
+$E          |       *id+id $| E
+$E*         |        id+id $| E
+$E*id                   +id$  R
+$E*E                    +id$  R
+$E                      +id$  E
+$E+                      id$  E
+$E+id                      $  R
+$E+E                       $  R
+$E                         $  aceitou a entrada
+
+Exemplo 2:
+S -> [L] | a
+L -> L;S | S
+PILHA       | ENTRADA       |AÇÃO
+$               [a;a]$       EMPILHAR
+$[               a;a]$       EMPILHAR
+$[a              ;a]$        REDUZIR
+$[S              ;a]$        RECONHECER
+$[L               ;a]$       EMPILHAR
+$[L;              a]$        EMPILHAR
+$[L;a              ]$        REDUZIR
+$[L;S               ]$       REDUZIR
+$[L                ]$        EMPILHAR
+$[L]                $        REDUZIR
+$S                  $        Aceita

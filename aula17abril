@@ -1,0 +1,48 @@
+Compiladores 17/4
+regras follow:
+
+1- se A é a primeira regra: $ PERTENCE follow(A)
+2- A->BC : follow(B) contém first(C)
+3- A->BC ou A->BC onde D gera vazio : follow(C) contém follow(A)
+
+
+ex:
+
+E-> -E | VL
+L-> -E | vazio
+V-> id seS-> (E) | vazio
+
+first(s) = {(, vazio}
+first(V)= {id}
+first(L){-,vazio}
+first(E) = {-,(, id}
+
+follow(E) = {$, )}
+follow(L) = {$, )}
+follow(V) = {-, $, )}
+follow(S) = {-, $, )}
+
+    -         | (       | )         | id     | $
+E   E->-E     |E->(E)   |           |E->VL   |
+L   L->-E     |         |L->vazio   |        |L-> vazio   
+V             |         |           |V->idS  |
+S   S->vazio  |S->(E)   |S->vazio   |        |S->vazio
+
+PILHA       | ENTRADA                  | AÇÃO
+$E           -id(-id)$                   E->-E
+$E-          -id(-id)$                   rec -
+$E            id(-id)$                   E->VL
+$LV           id(-id)$                   V->idS
+$LSid         id(-id)$                   rec id
+$LS           (-id)$                     S->(E)
+$L)E(         (-id)$                     rec (
+$L)E          -id)$                     E->-E
+$L)E-         -id)$                     rec -
+$L)E           id)$                     E-> VL
+$L)LV          id)$                     V->idS
+$L)LSid        id)$                     rec id
+$L)LS            )$                     S->vazio
+$L)L             )$                     L->vazio
+$L)              )$                     rec )
+$L                $                     L-> vazio
+$                                        reconhece
