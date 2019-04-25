@@ -24,7 +24,7 @@ Criar as expressões regulares que classificam todas as palavras no código.
 Como executar:
 
 1 - Executar o Flex para o arquivo de definição (supondo que seu nome seja lex01.l):
-	`$ flex lex01.l`
+	`$ flex l1.l`
 	Isso produzirá uma arquivo na linguagem C que equivale ao scanner. O arquivo tem sempre o nome lex.yy.c
 	
 2 - Compilar o código C gerado pelo Flex:
@@ -37,10 +37,6 @@ Como executar:
 **TRABALHO - 3**    
 
 Implementar um parser para a linguagem Lugosi usando a ferramente javacc e desenvolver 3 exemplos em lugosi que usem boa parte da linguagem  
-
-  
-quarta-feira (10/04) não havera aula!!!!
-
 
 Instruções:  
 `javacc Lugosi.jj`  
