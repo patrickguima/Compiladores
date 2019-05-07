@@ -1,0 +1,48 @@
+COMPILADORES 7/5
+
+== Análise de Precedência de Operações ==
+
+- A Precedência de operadorers pode estar embutida na gramática da linguagem ou na ferramenta usada para implementar a linguagem.
+
+- Vamos estudar uma técnica usada por ferramentas que permite que a precedência não seja embutida na gramática.
+
+- Nessa técnica, que é uma variação da análise empilhar/reduzir, usamos uma tabela de precedência que indica quando as operações
+de empilhar/reduzir devem ser executadas.
+
+- Relações de precedência entre dois tokens ´a´ e ´b´.
+
+a < b : a tem precedência MENOR que b
+a = b : a e b possuem a mesma precedência
+a > b : a tem precedência sobre b
+
+Seja ´a´ o terminal mais ao topo da pilha, e ´b´ o terminal sob o cabeçote de leitura, então
+
+    1) SE a < b ou a = b ENTÃO EMPILHA
+    2) SE a > b ENTÃO REDUZ
+
+Ex: 
+    E-> E\/E | E^E | (E) | id
+- Na tabela de precedência, as linhas são nomeadas com os terminais que podem aparecer mais ao topo da pilha e as colunas são
+nomeadas com os terminais que podem aparecer na entrada:
+
+    id  \/  ^  (  )  $
+id |    >   >     >  >
+\/ |<   >   <  <  >  >
+^  |<   >   >  <  >  >
+(  |<   <   <  <  = 
+)  |    >   >     >  >
+$  | <  <  <   <
+
+
+pilha    |    Relação   | entrada   | ação 
+$        |         <    |id\/id^id$ | EMPILHA
+$id      |         >    | \/id^id$  | REDUZ
+$E       |         <    | \/id^id$  | EMPILHA
+$E\/     |        <     |   id^id$  | EMPILHA
+$E\/id           >            ^id$    REDUZ
+$E\/E            <            id$     EMPILHA
+$E\/E^             <          id$     EMPILHA
+$E\/E^id          >             $     REDUZ
+$E\/E^E          >              $     REDUZ
+$E\/E            >              $     REDUZ
+$E                              $     Aceita
