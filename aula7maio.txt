@@ -46,3 +46,35 @@ $E\/E^id          >             $     REDUZ
 $E\/E^E          >              $     REDUZ
 $E\/E            >              $     REDUZ
 $E                              $     Aceita
+
+
+    Montando a tabela de precedência: (NÃO PRECISA SABER)
+
+-   Considerando dois peradores O1 e O2
+1) Se O1 possui maior precedência que O2, então
+    O1(pilha) > O2(entrada)
+    O2(pilha) < O1(entrada)
+
+2) Se O1 e O2 possuem a mesma precedência e são associativos à esquerda então       
+    O1 > O2
+    O2 > O1
+
+    Se são associativos à direita, então 
+    O1 < O2 
+    O2 < O1
+
+3) a Relação entre operadores e demais tokens é fixa
+    O < id   O < (   O > )   O > $
+    id > O   ( < O   ) > O   $ < O
+
+4) AS relações entre demais tokens também são fixas
+
+    ( < (   ) > )   id > )  $ < (
+    ( = )   ) < $   id > $  $ < id
+    ( < id  ) > $    
+
+Exemplo 
+E -> E+E | E*E | E**E | (E) | id
+** maior precedência, assoc à direita
+* precedência intermediária, assoc à esquerda
++ menor precedência, assoc esquerda
