@@ -78,3 +78,29 @@ E -> E+E | E*E | E**E | (E) | id
 ** maior precedência, assoc à direita
 * precedência intermediária, assoc à esquerda
 + menor precedência, assoc esquerda
+
+
+    +  | * | ** | ( |  )  | id | $
++   >  | < | <  | < | >   | <    >   
+*   >  | > | <  | < | >   | <    >
+**  >  | > | <  | < | >   | <    >
+(   <  | < | <  | < | =   | <   
+)   >  | > | >  |   | >   |      >
+id  >  | > | >  |   | >   |      >
+$   <  | < | <  | < |     | <    ac  
+
+pilha       Relação         entrada         ação
+$               <           id*(id+id)$      E 
+$id             >             *(id+id)$      R
+$E              <             *(id+id)$      E
+$E*             <              (id+id)$      E
+$E*(            <               id+id)$      E
+$E*(id          >                 +id)$      R
+$E*(E           <                 +id)$      E
+$E*(E+          <                  id)$      E
+$E*(E+id        >                    )$      R
+$E*(E+E         >                    )$      R
+$E*(E           =                    )$      E
+$E*(E)          >                     $      R
+$E*E            >                     $      R
+$E                                    $      aceita 
