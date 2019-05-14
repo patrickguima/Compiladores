@@ -1,0 +1,73 @@
+== Analise LR ==
+- Implementação da análise empilhar e reduzir;
+- Analise bottom up;
+-Left to Right, With Right most derivation;
+- Autômato que reconhece o lado direito de uma regra de produção e substitui pelo não terminal correspondente;
+- Autômato representado por uma tabela; 
+- reconhece praticamente todas as construções de uma gramática livre de contexto;
+- vamos estudar a Analise SLR (1) Simple LR, Lookahead;
+
+A -> a b
+B -> a c 
+
+()----a---()-----b---((A)) reduz A
+            -----c---((B)) reduz B
+
+Não tem problemas de fatoração de gramática porque o grafo faz os caminhos diferentes;
+
+= Uso da tabela SLR =
+Seja Em o estado no topo da pilha e ´ai´ o simbolo no cabeçote de leitura, então consultar ação [Em, ´ai´], caso:
+    a) empilha ex: empilhar "ai Ex"
+    b) reduz n(onde n é o número de uma regra de procução A->B):
+    desempilhar 2r simbolos (onde r = |B|) e empilhar "AEy" onde transição [Em, A] = Ey
+
+foto
+1) A->(A)
+2) A -> a                      
+                               |A' ->A.|
+|A' -> .A   |---------A--------|    (1)  |
+|A  -> .(A) |0
+|A  -> .a   |----------a-------|A-> a.  (2)|
+    |                                |
+  ( |                                |
+|A ->(.A)    |-------------a----------
+|A -> .(A)   |-----------------A-----------|A -> (A.) (4)| -----)----| A->(A).  (5)|
+|A-> .a   (3)|----(----|
+          -------------|
+
+estado | ação | transição
+...
+
+
+Ex 2
+1) S -> a       
+2) S -> [L]
+3) L -> L;S
+4) L -> S
+
+estado |    ação           | transição
+       | a | [ | ] | ; | $ | S | L
+    0  | e2| e3|   |   |   | 1 |
+    1  |   |   |   |   |AC |   |
+    2  |   |   |r1 |r1 | r1|   |
+    3  | e2|e3 |   |   |   | 5 | 4
+    4  |   |   | e6| e7|   |   |
+    5  |   |   | r4| r4|   |   |
+    6  |   |   | r2| r2| r2|   |
+    7  | e2|e3 |           | 8 |
+    8  |         r3| r3|                                    
+
+pilha      |entrada     |ação
+0             [a;a]$     e3
+0[3            a;a]$     e2
+0[3a2           ;a]$     r1
+0[3S5           ;a]$     r4
+0[3L4           ;a]$     e7 
+0[3L4;7          a]$     e2
+0[3L4;7a2         ]$     r1
+0[3L4;7S8         ]$     r3 
+0[3L4             ]$     e6
+0[3L4]6            $     r2
+0S1                $     aceita
+
+exercicio
