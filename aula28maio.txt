@@ -1,0 +1,137 @@
+BECK END 28/5
+
+- O front end do compilador gera como resultado uma árvore sintática
+
+- Nesse ponto sabemos q o programa está corretamente escrito: respeita as regras sintáticas e semânticas da linguagem.
+
+- Dessa forma o próximo passo é iniciar o processo de tradução ou interpretação
+
+- a árvore sintática é uma representação do programa fonte. Todas as construções do programa original ainda estão presentes.
+
+- No beck end, a árvore sintática é processada para permitir a geração de código alvo ou interpretação.
+
+	GERAÇÃO DE CÓDIGO INTERMEDIÁRIO
+
+- O processo de geração de código intermediário envolve substituir nós da árvore sintática que representam contruções da linguagem fonte, por nós que representam construções equivalentes em uma linguagem intermediária.
+ 
+- A árvore gerada nesse processo pode ser maior do que a original já que uma construção de uma linguagem de alto nível geralmente é representada por várias construções de uma linguagem de mais baixo nível.
+
+	LINGUAGEM INTERMEDIÁRIA
+
+- O código intermediário deve:
+	-> ser fácil de gerar
+	-> ser otimizável
+	-> fácil de converter para código alvo
+
+	- NÃO COLOCOU NO QUADRO: Pode fazer a tradução mais simples, porém vai haver mais implementação
+
+- O uso de uma linguagem intermediária facilita a tradução pois existe uma diferença semântica muito grande entre uma linguagem de alto nível e uma linguagem de máquina
+
+- o código intermediário ainda é independente de arquitetura. Isso torna mias fácil portar o compilador para arquiteturas diferentes.
+
+-além disso existem várias linguagens intermediárias já implemetadas com otimizações e back ends para diferentes arquiteturas. Ex: LLVM
+
+	EXEMPLOS DE LINGUAGENS INTERMEDIÁRIAS
+
+- árvore sintática otimizada:
+	código simples, geralmente usado para implementar interpretadores. Consiste em implementar otimizações na árvore como por exemplo transformar a árvore em um grafo para evitar avaliar novamente expressões comuns.
+
+
+	ex: 5*2 + 2*5
+
+       +		|		+
+    *     *     |->    ( )
+    					*
+  5   2  2  5   |	   5 2
+
+- notação pré e pós fixa:
+ facilita a geração de código para máquinas baseadas em pilha
+
+
+ 1 * 2 + 3
+   |
+   \/
+
+1         2      *      3      +
+|		  |      |     |       |
+push 1   push 2  mult  push 3  add
+
+
+Transforma de notação infixa para pós fixa:
+
+E -> E1 + T {E.COD = E1.COD ++ T.COD ++ "+"}
+E -> T {E.COD = T.COD}
+T -> T1* F {T.COD = T1.COD ++ F.COD ++ "*"}
+T -> F {T.COD = F.COD}
+F-> ID {F.COD = ID.LEXEMA}
+
+CÓDIGO DE TRÊS ENDEREÇOS
+
+- Quebra expressões grandes em expressões que usem no máximo 3 endereços(variáveis)
+
+- resultado intermediários são guardados em temporários, o que indica a necessidade do uso de registradores noformato mais parecido com linguagens de máquina
+ex:
+ x := (a+b) * (-c+a)
+
+ tmp1:= a+b
+ tmp2:= -c
+ tmp3:= tmp2 + a
+ tmp4:= tmp1*tmp3
+ x:=tmp4
+
+ EXEMPLO DE LINGUAGEM DE TRÊS ENDEREÇOS
+
+ A:= B op C
+ A:= op B
+ A:= B
+ Goto L
+ IF a oprel B Goto L
+
+GERANDO CODIGO DE TRÊS ENDEREÇOS
+
+Quádruplas A:= B * (-C + D)
+
+op   | Arg1 | Arg2 | Result
+(-u)    C             Tmp1
+  +    Tmp1     D     Tmp2 
+  *     B     Tmp2    Tmp3
+ :=    Tmp3             A
+
+ESQUEMA DE PRODUÇÃO PARA GERAR CODIGO DE TRÊS ENDEREÇOS
+
+S-> id := E {S.cod = E.cod ++ Geracod(ID.lexema ":=" E.nome)}
+E-> E1 + E2 {E.nome := GERATEMP();
+			 E.cod  := E1.cod ++ E2.cod ++
+			 Geracod(E.nome ":=" E1.nome "+" E2.nome) }
+E-> E1 * E2 {E.nome = Geratemp();
+			 E.cod = E1.cod ++ E2.cod ++
+			 Geracod (E.nome ":=" E1.nome "*" E2.nome) }
+
+E -> ID {E.nome = ID.lexema; E.cod :=""}
+
+A:= X+Y * 2
+
+FOTO patrick
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
