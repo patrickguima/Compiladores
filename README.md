@@ -5,7 +5,8 @@
 23/04 - Ultima Materia  
 24/04 - Apresentação dos Trabalhos  
 30/04 - Prova
-4 e 5/5 - NÃO VAI TER AULA
+
+4 e 5/6 - NÃO VAI TER AULA
 
 Aula 19/03
 
