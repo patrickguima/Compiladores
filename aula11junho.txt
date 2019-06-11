@@ -1,0 +1,96 @@
+OTIMIZAÇÃO DE CÓDIGO INTERMEDIÁRIO  - 11/6
+
+
+- Bloco Básico
+	trecho de código que começa com um comando líder e que não apresenta desvios, a não ser eventualmente no último eventualmente no último comando do bloco.
+
+OTIMIZAÇÃO ATRAVÉS DA TRANSFORMAÇÃO DE BLOCOS BÁSICOS EM GRAFO
+
+-> Algoritmo para transformar um bloco em um GAD(grafo acíclico dirigido)
+	Formato de intruções: 
+		(i)   x = y op z
+		(ii)  x = op y
+		(iii) x = y 
+		para cada intrução do bloco básico executar (1) e (2).
+
+1) se o nodo y n~ao existe no grafo, criar. No caso de (i) criar também nodo z.
+2) (i) verificar se já existe nodo OP com filhos x e y(nessa ordem). Caso exista, chamar também de x, cc, criar.
+   (ii) verificar a existência de nodo OP com filho y, SENÃO
+   (iii) chamar também de x o nodo y
+
+
+exemplo:
+	y = ((a+b) * (a - b)) + ((a+b) * (a-c))
+
+	tmp1 := a+b 		grafo na foto
+	tmp2 := a-b
+	tmp3 := tmp1 * tmp2
+	tmp4 := a+b 
+	tmp5 := a-c
+	tmp6 := tmp4*tmp5
+	tmp7 := tmp3+tmp6
+	y    := tmp7
+
+
+exercicio:
+
+((a+b)* (a-c)) + ((a+b)*(a-c))
+
+tmp1:= a + b  grafo na foto
+tmp2:= a - c
+tmp3:= tmp1 * tmp2
+tmp4:= a + b
+tmp5 := a-c
+tmp6 := tmp4 * tmp5
+tmp7:= tmp3 + tmp6
+y := tmp7
+
+ALGORITMO PARA GERAR UMA SEQUÊNCIA OTIMIZADA CÓDIGO
+
+obs: a sequência otimizada é o INVERSO da lista obtida
+1) L = 0
+2) escolher um n que não esteja em L, que se existam arestas incidentes em n, essas partem de nós que já estão em L. 
+Adicionar n em L. Se não existe n, encerrar.
+3) se (i) n é o último nodo adicionado em L 
+      (ii) a aresta mais à esquerda que se origina em n incide em M, e M não está em L.
+      (iii) todos os predecessores direitos de M estão em L.
+   então adicionar M em L e ir para 3)
+   senão voltar para 2)
+
+
+exercicio:
+t1 = a+b   grafo na foto
+t2= a-b
+t3= t1*t2
+t4= a-c
+t5= b-c
+t6= t2*t4
+t7=t6*t4 
+
+ L = t3, t1,t7,t6, t2,t4, t5
+     <-----------------------sequencia otimizada
+
+t5 = b-c
+t4 = a-c
+t2= a-b
+t6 = t2*t4
+t7 = t6*t4
+t1 = a+b
+t3 = t1*t2
+
+
+exercicio 2:
+y = ((a+b) * (a - b)) + ((a+b) * (a-c))
+
+
+L = y, t3, t6, t1, t2, t5 
+
+otimizado
+t5 = a -c  3op
+t2= a-b    3op
+t1= a+b    lda A, add b
+t6= t1*t5  mult t5, sta t6
+t3=t1*t2   lda t1, mult t2
+y= t3*t6   mult t6, sta y
+
+4 instruções economizadas
