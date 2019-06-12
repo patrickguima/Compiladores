@@ -1,0 +1,147 @@
+PARSER_BEGIN(ExemploTDS)
+import java.io.*;
+import java.util.ArrayList;
+
+class AChamada{
+	Tipo tipo;
+ 	String id;
+	ArrayList<Arg> args;
+
+	public	String toString()
+	{
+		String resultado;
+		resultado = tipo + " " + id + "(";
+		
+		if(args.size() > 0){ //se ha argumentos
+
+			resultado+= args.get(0) + ", ";
+
+			for(int i = 1; i < args.size(); i++){
+				if(i == args.size()-1){
+					resultado += args.get(i);
+				} else {
+					resultado += args.get(i) + ",";
+				}
+
+			}
+		}	
+		resultado += ") { \n}";
+		return resultado;
+
+	}
+}
+
+class Arg{
+	Tipo tipo;
+	String id;
+
+	public String toString()
+	{return (tipo + " " + id);}
+}
+   	
+class Tipo{}
+
+class Int extends Tipo{
+	public String toString()
+	{return "Int";}
+}
+class Char extends Tipo{
+	public String toString()
+	{return "Char";}
+}
+class Void extends Tipo{
+	public String toString()
+	{return "Void";}
+}
+
+
+
+public class ExemploTDS {
+
+  public static void main(String args[]) throws ParseException,IOException {
+    
+    ExemploTDS parser = new ExemploTDS(new FileInputStream(args[0]));
+    AChamada arvore = parser.Chamada();
+   	System.out.println(arvore);
+
+    //printer(a);
+  }
+}
+
+PARSER_END(ExemploTDS)
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  <ACHAVES: "{">
+| <FCHAVES: "}">
+| <VOID: "Void">
+| <CHAR: "Char">
+| <INT: "Int">
+| <APAR: "(">
+| <FPAR: ")">
+| <VIRG: ",">
+}
+
+TOKEN :
+{
+  < ID: ["a"-"z"](["0"-"9","a"-"z"])* >
+}
+
+
+AChamada Chamada ():
+{AChamada resultado = new AChamada(); Token id;}
+{
+
+ resultado.tipo=Tipo() id=<ID> <APAR> (resultado.args=ListaArgs())? <FPAR> <ACHAVES> <FCHAVES> 
+
+ {resultado.id = id.image;
+  return resultado;}
+
+}
+
+/*AWHILE While():
+{AWHILE resultado = new AWHILE();}
+{
+	resultado.tipo = 
+	
+	return resultado;
+}*/
+
+ArrayList<Arg> ListaArgs () :
+{ArrayList<Arg> lista = new ArrayList<Arg> (); Arg arg;}
+{
+   arg = Arg() {lista.add(arg);} ListaArgs2(lista)
+   {return lista;} 
+}
+
+void ListaArgs2 (ArrayList<Arg> lista):
+{Arg arg;}
+{
+  (<VIRG> arg=Arg() {lista.add(arg);} ListaArgs2(lista))?
+}
+
+Arg Arg():
+{Arg resultado = new Arg(); Token id;}
+{
+	resultado.tipo = Tipo() id=<ID>
+	{
+		resultado.id = id.image;
+		return resultado;
+	}
+}
+
+Tipo Tipo ():
+{Tipo resultado=null;}
+{
+   ((<INT> {resultado = new Int();}) | (<CHAR> {resultado = new Char();}) | (<VOID> {resultado = new Void();} ))
+   {return resultado;}
+}
+	
