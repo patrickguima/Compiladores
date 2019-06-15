@@ -1,0 +1,164 @@
+PARSER_BEGIN(Lugosi)
+import java.io.*;
+import java.util.*;
+
+class ArvoreLugosi{
+	Main main;
+	ArrayList <Func> funcoes;
+
+    ArvoreLugosi(Main m, ArrayList<Func> f){
+        this.main = m; 
+        this.funcoes = f;
+    }
+}
+
+class Main{
+	ArrayList <VarDecl> varDecl;
+	ArrayList <Comando> comandos;
+
+    Main(ArrayList <VarDecl> varDecl, ArrayList <Comando> comandos){
+        this.varDecl = varDecl;
+        this.comandos = comandos;
+    }
+}
+
+class VarDecl{
+	Tipo tipo;
+	String var;
+
+    VarDecl(Token id, String tipo){
+        this.id = id.image;
+        this.tipo = tipo;
+    }
+}
+
+class SeqComandos{
+    ArrayList <Comando> comandos;
+
+    SeqComandos(ArrayList <Comando> c) {
+        this.comando = c;
+    }
+}
+
+class Comando{}
+class CmdAtribuicao extends Comando{ // x = 4 + a;
+	String var;  
+	Exp exp;
+
+    CmdAtribuicao(Token id, Exp e){ //talvez aqui
+        this.var = id.image;
+        this.exp = e;
+    }
+}
+
+class CmdChamadaFuncao extends Comando{ // titi(int a, char b);
+	String nomeFuncao;
+	ArrayList <Exp> argumentos;
+
+    CmdChamadaFuncao(Token id, ArrayList <Exp> arg){
+        this.nomeFuncao = id.image;
+        this.argumentos = arg;
+    }
+}
+class CmdIf extends Comando{
+	Exp exp;
+	ArrayList <Comando> then;
+
+    CmdIf(Exp e, ArrayList <Comando> seqComandos){
+        this.exp = e;
+        this.then = seqComandos;
+    }
+}
+class CmdWhile extends Comando{
+	Exp exp;
+	ArrayList <Comando> comandos;
+
+    CmdWhile(Exp e, ArrayList <Comando> seqComandos){
+        this.esp = e;
+        this.comandos = seqComandos;
+    }
+}
+class CmdDoWhile extends Comando{
+	ArrayList <Comando> comandos;
+	Exp exp;
+
+    CmdDoWhile(ArrayList <Comando> seqComandos, Exp e){
+        this.comandos = seqComandos;
+        this.exp = e;
+    }
+}
+class CmdReturn extends Comando{
+	Exp exp;
+
+    CmdReturn(Exp e){
+        this.exp = e;
+    }
+} 
+class CmdPrint extends Comando{
+	Exp exp;
+    CmdPrint(Exp e){
+        this.exp = e;
+    }
+}
+
+class Exp{}
+class ExpOperador extends Exp{
+	Exp arg1;
+	Exp arg2;
+	String op;
+
+    ExpOperador(Exp a1, Exp a2, String operador){
+        this.arg1 = a1;
+        this.arg2 = a2;
+        this.op = operador;
+    }
+}
+class Fator extends Exp{}
+class FtrTokenId extends Fator{//
+	String id;
+
+    FtrTokenId(String id){
+        this.id = id;
+    }
+}
+class FtrListaExp extends Fator{//
+	String id;
+	ArrayList <Exp> listExp;
+
+    FtrListaExp(String id, ArrayList <Exp> listExp){
+        this.id = id;
+        this.listExp = listExp;
+    }
+}
+
+class FtrNumLiteral extends Fator {
+    String numLiteral;
+
+    FtrNumLiteral(String numLiteral){
+        this.numLiteral = numLiteral;
+    }
+}
+
+class FtrTipo extends Fator{
+    String tipo;
+
+    FtrTipo(String tipo){
+        this.tipo = tipo;
+    }
+}
+
+class listaExp{
+    Exp e;
+
+    listaExp(Exp e){
+        this.e = e;
+    }
+}
+
+class Func{
+    String id;
+    String tipo;
+}
+/*class Tipo{}
+class Int extends Tipo{}
+class Bool extends Tipo{}*/
