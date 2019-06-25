@@ -90,6 +90,13 @@ public class ExemploTDS implements ExemploTDSConstants {
     throw new Error("Missing return statement in function");
   }
 
+/*AWHILE While():
+{AWHILE resultado = new AWHILE();}
+{
+	resultado.tipo = 
+	
+	return resultado;
+}*/
   static final public ArrayList<Arg> ListaArgs() throws ParseException {
  ArrayList<Arg> lista = new ArrayList<Arg> (); Arg arg;
     arg = Arg();

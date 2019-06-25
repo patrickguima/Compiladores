@@ -107,8 +107,8 @@ AChamada Chamada ():
 
 }
 
-/*AWHILE While():
-{AWHILE resultado = new AWHILE();}
+/*AChamada Declaracaao(): //declaracao de variaveis
+{}
 {
 	resultado.tipo = 
 	

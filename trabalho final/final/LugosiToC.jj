@@ -2,7 +2,7 @@ PARSER_BEGIN(Lugosi)
 import java.io.*;
 import java.util.*;
 
-class ArvoreLugosi{
+class ArvoreLugosi{//
 	Main main;
 	ArrayList <Func> funcoes;
 
@@ -12,17 +12,17 @@ class ArvoreLugosi{
     }
 }
 
-class Main{
-	ArrayList <VarDecl> varDecl;
+class Main{//
+	ArrayList <VarDecl> varD;
 	ArrayList <Comando> comandos;
 
-    Main(ArrayList <VarDecl> varDecl, ArrayList <Comando> comandos){
-        this.varDecl = varDecl;
+    Main(ArrayList <VarDecl> varD, ArrayList <Comando> comandos){
+        this.varD = varD;
         this.comandos = comandos;
     }
 }
 
-class VarDecl{
+class VarDecl{ //possivel erro - Tipo tipo ou String tipo
 	Tipo tipo;
 	String var;
 
@@ -32,22 +32,22 @@ class VarDecl{
     }
 }
 
-class SeqComandos{
+class SeqComandos{//
     ArrayList <Comando> comandos;
 
     SeqComandos(ArrayList <Comando> c) {
-        this.comando = c;
+        this.comandos = c;
     }
 }
 
-class Comando{}
+class Comando{}//
 class CmdAtribuicao extends Comando{ // x = 4 + a;
 	String var;  
-	Exp exp;
+	Exp e;
 
-    CmdAtribuicao(Token id, Exp e){ //talvez aqui
+    CmdAtribuicao(Token id, Exp cmd){ 
         this.var = id.image;
-        this.exp = e;
+        this.e = cmd;
     }
 }
 
@@ -60,7 +60,8 @@ class CmdChamadaFuncao extends Comando{ // titi(int a, char b);
         this.argumentos = arg;
     }
 }
-class CmdIf extends Comando{
+
+class CmdIf extends Comando{//
 	Exp exp;
 	ArrayList <Comando> then;
 
@@ -69,7 +70,7 @@ class CmdIf extends Comando{
         this.then = seqComandos;
     }
 }
-class CmdWhile extends Comando{
+class CmdWhile extends Comando{//
 	Exp exp;
 	ArrayList <Comando> comandos;
 
@@ -78,7 +79,7 @@ class CmdWhile extends Comando{
         this.comandos = seqComandos;
     }
 }
-class CmdDoWhile extends Comando{
+class CmdDoWhile extends Comando{//
 	ArrayList <Comando> comandos;
 	Exp exp;
 
@@ -87,22 +88,22 @@ class CmdDoWhile extends Comando{
         this.exp = e;
     }
 }
-class CmdReturn extends Comando{
+class CmdReturn extends Comando{//
 	Exp exp;
 
     CmdReturn(Exp e){
         this.exp = e;
     }
 } 
-class CmdPrint extends Comando{
+class CmdPrint extends Comando{//
 	Exp exp;
     CmdPrint(Exp e){
         this.exp = e;
     }
 }
 
-class Exp{}
-class ExpOperador extends Exp{
+class Exp{}//
+class ExpOperador extends Exp{//
 	Exp arg1;
 	Exp arg2;
 	String op;
@@ -113,7 +114,7 @@ class ExpOperador extends Exp{
         this.op = operador;
     }
 }
-class Fator extends Exp{}
+class Fator extends Exp{}//
 class FtrTokenId extends Fator{//
 	String id;
 
@@ -131,7 +132,7 @@ class FtrListaExp extends Fator{//
     }
 }
 
-class FtrNumLiteral extends Fator {
+class FtrNumLiteral extends Fator {//
     String numLiteral;
 
     FtrNumLiteral(String numLiteral){
@@ -139,7 +140,7 @@ class FtrNumLiteral extends Fator {
     }
 }
 
-class FtrTipo extends Fator{
+class FtrTipo extends Fator{//
     String tipo;
 
     FtrTipo(String tipo){
@@ -147,7 +148,7 @@ class FtrTipo extends Fator{
     }
 }
 
-class listaExp{
+class listaExp{//
     Exp e;
 
     listaExp(Exp e){
@@ -155,10 +156,33 @@ class listaExp{
     }
 }
 
-class Func{
+class Func{ //
     String id;
     String tipo;
+    ArrayList <ListaArg> argumentos;
+    ArrayList <VarDecl> vd;
+    ArrayList <Comando> seqComandos;
+
+    Func(Token id, String tipo, ArrayList <ListaArg> argumentos, ArrayList <VarDecl> vd, ArrayList <Comando> seqComandos){
+        this.id = id.image;
+        this.tipo = tipo;
+        this.argumentos = argumentos;
+        this.vd = vd;        
+        this.seqComandos = seqComandos;
+    }
 }
 /*class Tipo{}
 class Int extends Tipo{}
 class Bool extends Tipo{}*/
+
+PARSER_END(Lugosi);
+
+public class Lugosi {
+public static void main(String args[]) throws Exception{
+     
+    FileInputStream fs = new FileInputStream(new File(args[0]));// abrir o arquivo passado por linha de comando contento o código em Lugosi:
+    Lugosi parser = new Lugosi(fs);// Instanciar o parser da linguagem Lugosi passando como argumento o arquivo contendo o código Lugosi a ser processado:
+    ArvoreLugosi arvore = parser.Lugosi(); // Chamar a primeira regra do parser que irá analisar o código e devolver a árvore sintática
+    pprint(arvore);// Passar a árvore para o pretty printer, ou gerador de código
+
+}
