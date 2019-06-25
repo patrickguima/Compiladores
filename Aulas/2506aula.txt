@@ -5,10 +5,80 @@
 10/7 trabalho final
 
 
-== Interpretadores == 
+                    == Interpretadores == 
+
 - É a maneira mais fácil de prototipar uma linguagem de programação;
 - Existem várias técnicas de implementação;
 - Os Interpretadores mais simples implementam linha à linha di código fonte. 
     PROBLEMA: vários erros são encontrados apenas em tempo de execução.
 
-- As técnicas mais usadas
+- As técnicas mais usadas para implementar compiladores operam em cima da árvore sintática
+
+- Dessa forma, Interpretadores em compiladores possuem o mesmo front-end, a diferença fica no back-end;
+
+- Enquanto o compilador gera código alvo a partir da árvore executando as instruções ali presentes seguindo a ordem imposta pela semântica da linguagem.
+
+- Para Interpretadores baseados na execução da árvore sintática, Existem duas técnicas principais de implementação:
+
+    1) Interpretadores Recursivos
+    2) Interpretadores Iterativos
+
+ 1- Interpretador Recursivo
+
+- É a técnica mais simples de implementar um Interpretador;
+- Segue a natureza indutiva da gramática/árvore sintática
+- O significado de uma expressão/nó da árvore sintática, é dado pelo significado de seus componentes;
+- implementa-se uma rotina para interpretar cada tipo de nó possível, e essas rotinas são chamadas seguindo a ordem imposta pela semântica da linguagem.
+- Ex: Interpretador baseado no compilador didático estudado em aula.
+
+- EXEMPLO
+    Exp->...
+        | If B then Exp else Exp
+    B-> T | F
+    
+    class If extends Exp{
+        B expbool;
+        Exp then;
+        Exp else;
+    }
+
+    Bool interpretB(B exp);
+
+    int interpretExp(Exp e){
+        ...
+        if( e instanceof If ){
+            if(interpretB(e.expbool)){
+                return (interpretExp(e.then));
+            }
+            else{
+                interpretExp(e.else);
+            }
+        }
+    }
+
+- VANTAGEM: fácil de implementar, cria-se rotinas para os tipos de nós e usa-se recursão baseada na estrutura sintática da linguagem.
+- DESVANTAGEM: Lentp. Muitas linguagens de programação não são otimizadas para se trabalhar com recursão.
+
+2- Interpretador Iterativo
+- Não usa recursão
+-Possui um ponteiro para o nó corrente e um loop por fora de um case;
+- De acordo com o ponteiro para o nó corrente, pula para o código específico no case. A execução de um caso específico, muda o ponteiro para o próximo npo a ser avaliado e o procesos se repete.
+
+EXEMPLO: 
+interpret(Exp e){
+    no_corrente = e;
+    while(true){
+        ...
+        case(e instanceof If){
+            if(e.expbool){
+                no_corrente = e.then;
+                break;
+            }
+            else{
+                no_corrente = e.else;
+                break;
+            }
+            ...
+        }
+    }
+}
