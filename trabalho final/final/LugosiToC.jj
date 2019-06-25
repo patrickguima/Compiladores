@@ -175,6 +175,7 @@ class Func{ //
 class Int extends Tipo{}
 class Bool extends Tipo{}*/
 
+<<<<<<< HEAD
 PARSER_END(Lugosi);
 
 public class Lugosi {
@@ -186,3 +187,6 @@ public static void main(String args[]) throws Exception{
     pprint(arvore);// Passar a árvore para o pretty printer, ou gerador de código
 
 }
+=======
+PARSER_END(Lugosi)
+>>>>>>> 5abb2e7b4b59e567cb5f1de8f2ea3646c0477cc3

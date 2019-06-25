@@ -1,0 +1,14 @@
+26/6 não tem aula;
+2/7 aula
+3/7: duvidas prova
+9/7 prova 2
+10/7 trabalho final
+
+
+== Interpretadores == 
+- É a maneira mais fácil de prototipar uma linguagem de programação;
+- Existem várias técnicas de implementação;
+- Os Interpretadores mais simples implementam linha à linha di código fonte. 
+    PROBLEMA: vários erros são encontrados apenas em tempo de execução.
+
+- As técnicas mais usadas
