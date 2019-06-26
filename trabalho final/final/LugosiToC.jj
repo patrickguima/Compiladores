@@ -3,11 +3,11 @@ import java.io.*;
 import java.util.*;
 
 class ArvoreLugosi{//
-	Main main;
+	Main my_main;
 	ArrayList <Func> funcoes;
 
     ArvoreLugosi(Main m, ArrayList<Func> f){
-        this.main = m; 
+        this.my_main = m; 
         this.funcoes = f;
     }
 }
@@ -106,12 +106,12 @@ class Exp{}//
 class ExpOperador extends Exp{//
 	Exp arg1;
 	Exp arg2;
-	String op;
+	String operador;
 
     ExpOperador(Exp a1, Exp a2, String operador){
         this.arg1 = a1;
         this.arg2 = a2;
-        this.op = operador;
+        this.operador = operador;
     }
 }
 class Fator extends Exp{}//
@@ -171,22 +171,171 @@ class Func{ //
         this.seqComandos = seqComandos;
     }
 }
-/*class Tipo{}
-class Int extends Tipo{}
-class Bool extends Tipo{}*/
-
-<<<<<<< HEAD
-PARSER_END(Lugosi);
 
 public class Lugosi {
 public static void main(String args[]) throws Exception{
      
-    FileInputStream fs = new FileInputStream(new File(args[0]));// abrir o arquivo passado por linha de comando contento o código em Lugosi:
-    Lugosi parser = new Lugosi(fs);// Instanciar o parser da linguagem Lugosi passando como argumento o arquivo contendo o código Lugosi a ser processado:
-    ArvoreLugosi arvore = parser.Lugosi(); // Chamar a primeira regra do parser que irá analisar o código e devolver a árvore sintática
-    pprint(arvore);// Passar a árvore para o pretty printer, ou gerador de código
+    Lugosi parser = new Lugosi(new FileInputStream(args[0]));
+    ArvoreLugosi lug = parser.Lugosi();
+    //printer(lug);
+    //printers{}
+}
+
+PARSER_END(Lugosi);
+
+SKIP :
+{
+  " "
+| "\t"
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  <MAIN: "main">
+| <ACHAVES: "{">
+| <FCHAVES: "}">
+|<VAR: "var">
+|<PONTOVIR: ";">
+|<TIPO: ("int" | "bool")>
+|<IF: "if">
+|<WHILE: "while">
+|<DO: "do">
+|<RETURN: "return">
+|<PRINT: "print">
+|<ATRIBUICAO:":=">
+|<APARENTESES:"(">
+|<FPARENTESES:")">
+|<FUNCTION:"function">
+|<VIRGULA:",">
+|<TOKEN_NUMLITERAL:(["0"-"9"])+ ("."(["0"-"9"])+ )? ("E" ("+" | "-")? (["0"-"9"])+)?>
+|<TRUE: "true">
+|<FALSE: "false">
+|<TOKEN_ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])* ("_")*>
 
 }
-=======
-PARSER_END(Lugosi)
->>>>>>> 5abb2e7b4b59e567cb5f1de8f2ea3646c0477cc3
+
+TOKEN :
+{
+  <NUM : (["0"-"9"])+>
+ |<ID: ["a"-"z","A"-"Z"] ( ["a"-"z","A"-"Z","0"-"9"])*>
+ |<OP: "+" | "-" | "*" | "/" | "&&" | "||" | "<" | ">" | "==">
+ 
+
+}
+///////////////////////////////////////////////////////////////////////////////////
+
+ArvoreLugosi Lugosi () :
+{Main my_main; ArrayList <Func> funcoes;}
+{ 
+
+  Main() 
+  (Func())?
+  <EOF> 
+  {return new ArvoreLugosi(my_main,)}
+}
+
+ArrayList <VarDecl> VarDecl():
+{ ArrayList <VarDecl> a = new ArrayList<VarDecl> (); Tipo tipo; String var; }
+{
+	(<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
+    {return a;}
+}
+
+String Tipo():
+{Token t;}
+{
+  t = <TIPO>
+  {return t.image;}
+}
+
+ArrayList <Comando> SeqComandos():
+{ ArrayList <Comando> c = new ArrayList <Comando> ();}
+{
+	(comando = Comando() {c.add(comando);})* 
+    {return c;}
+}
+Comando Comando()://falta
+{}
+{
+	(<TOKEN_ID> comandoNR())
+  	|(<IF> <APARENTESES> exp() <FPARENTESES> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+  	|(<WHILE> <APARENTESES> exp() <FPARENTESES> <DO> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+  	|(<DO> <ACHAVES> SeqComandos() <FCHAVES> <WHILE> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
+  	|(<RETURN> exp() <PONTOVIR>)
+  	|(<PRINT> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
+}
+
+void Func():
+{ ArrayList<Func> func = new ArrayList<Func> (); String id; String tipo; ArrayList <ListaArg> argumentos;ArrayList <VarDecl> vd;ArrayList <Comando> seqComandos;}
+{
+    (<FUNCTION> <TIPO> <TOKEN_ID> <APARENTESES> (listaArg())? <FPARENTESES> <ACHAVES> VarDecl() SeqComandos() <FCHAVES> {func.add(new Func(tipo, id, argumentos, vd, seqComandos)); })+
+    {return func;}
+}
+
+void listaArg()://falta
+{}
+{
+  <TIPO> <TOKEN_ID> (<PONTOVIR> listaArg())?
+}
+
+
+// pra tirar a recursão
+void comandoNR(): //falta
+{}
+{
+	(<ATRIBUICAO> exp() <PONTOVIR>) 
+  	|(<APARENTESES> listaExp() <FPARENTESES> <PONTOVIR>)
+
+}
+Exp Exp():
+{Exp arg1; Exp arg2; String operador;Fator f}
+{
+	(<APARENTESES> arg1 = Exp() operador =  <OP> arg2() <FPARENTESES>)| fator()	
+
+    {return new OperacaoBinaria(arg1, arg2, operador.image);}
+    
+    f = Fator()
+    {return f;}
+}
+
+void listaExp():
+{}
+{
+  exp() listaExpNR()
+}
+
+void listaExpNR():
+{}
+{
+  (<VIRGULA> exp() listaExpNR())?
+}
+
+
+void fator():
+{}
+{
+	(<TOKEN_ID> fatNR())
+	|<TOKEN_NUMLITERAL> | <TRUE> | <FALSE> 
+}
+
+void fatNR():
+{}
+{
+	(<APARENTESES> (listaExp())?  <FPARENTESES>)?
+}
+
+
+Main Main ():
+{ ArrayList <VarDecl> varD; ArrayList <Comando> comandos; }
+{
+ <MAIN> <ACHAVES> 
+ 
+  VarDecl()
+  SeqComandos()
+
+ <FCHAVES>
+ { return new Main(varD, comandos); }
+
+}
