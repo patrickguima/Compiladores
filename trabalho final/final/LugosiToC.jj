@@ -226,45 +226,52 @@ TOKEN :
 }
 ///////////////////////////////////////////////////////////////////////////////////
 
-ArvoreLugosi Lugosi () :
+ArvoreLugosi Lugosi () : //ok
 {Main my_main; ArrayList <Func> funcoes;}
 { 
 
-  Main() 
-  (Func())?
+  my_main = Main() 
+  funcoes = (Func())?
   <EOF> 
-  {return new ArvoreLugosi(my_main,)}
+  {return new ArvoreLugosi(my_main, funcoes);}
 }
 
-ArrayList <VarDecl> VarDecl():
+ArrayList <VarDecl> VarDecl(): //ok
 { ArrayList <VarDecl> a = new ArrayList<VarDecl> (); Tipo tipo; String var; }
 {
-	(<VAR> <TIPO> <TOKEN_ID> <PONTOVIR>)*
+	(<VAR> t = Tipo() id = <TOKEN_ID> <PONTOVIR> {a.add(new VarDecl(id, tipo));})*
     {return a;}
 }
 
-String Tipo():
+String Tipo(): //ok
 {Token t;}
 {
   t = <TIPO>
   {return t.image;}
 }
 
-ArrayList <Comando> SeqComandos():
-{ ArrayList <Comando> c = new ArrayList <Comando> ();}
+ArrayList <Comando> SeqComandos(): //ok
+{ ArrayList <Comando> c = new ArrayList <Comando> (); Comando comando;}
 {
 	(comando = Comando() {c.add(comando);})* 
     {return c;}
 }
-Comando Comando()://falta
-{}
+Comando Comando()://ok
+{Token id; Exp e; Object comandoNR, ArrayList <Comando> seqComandos;}
 {
-	(<TOKEN_ID> comandoNR())
-  	|(<IF> <APARENTESES> exp() <FPARENTESES> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
-  	|(<WHILE> <APARENTESES> exp() <FPARENTESES> <DO> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
-  	|(<DO> <ACHAVES> SeqComandos() <FCHAVES> <WHILE> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
-  	|(<RETURN> exp() <PONTOVIR>)
-  	|(<PRINT> <APARENTESES> exp() <FPARENTESES> <PONTOVIR>)
+	((id = <TOKEN_ID>) comandoNR = ComandoNR())
+        {if (comandoNR instanceof Exp) return new CmdAtribuicao(id, ((Exp) comandoNR))
+         else return new CmdChamadaFuncao(id, ((ArrayList<Exp>  ) comandoNR));  }
+  	|(<IF> <APARENTESES> (e = Exp()) <FPARENTESES> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <PONTOVIR>)
+        {return new CmdIf(e, seqComandos);}
+  	|(<WHILE> <APARENTESES> (e = Exp()) <FPARENTESES> <DO> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+        {return new CmdWhile(e, seqComandos);}
+  	|(<DO> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <WHILE> <APARENTESES> e = Exp() <FPARENTESES> <PONTOVIR>)
+        {return new CmdDoWhile(e, seqComandos);}
+  	|(<RETURN> (e = Exp()) <PONTOVIR>)
+        {return new CmdReturn(e);}
+  	|(<PRINT> <APARENTESES> (e = Exp()) <FPARENTESES> <PONTOVIR>)
+        {return new CmdPrint(e);}
 }
 
 void Func():
@@ -282,21 +289,22 @@ void listaArg()://falta
 
 
 // pra tirar a recursão
-void comandoNR(): //falta
-{}
+Object ComandoNR(): //ok
+{Object e;}
 {
-	(<ATRIBUICAO> exp() <PONTOVIR>) 
-  	|(<APARENTESES> listaExp() <FPARENTESES> <PONTOVIR>)
+	(<ATRIBUICAO> (e = Exp()) <PONTOVIR>) 
+  	|(<APARENTESES> (e = listaExp()) <FPARENTESES> <PONTOVIR>)
 
+    {return e;}
 }
-Exp Exp():
+
+Exp Exp(): //ok
 {Exp arg1; Exp arg2; String operador;Fator f}
 {
-	(<APARENTESES> arg1 = Exp() operador =  <OP> arg2() <FPARENTESES>)| fator()	
-
+	(<APARENTESES> arg1 = Exp() operador = <OP> arg2 = Exp() <FPARENTESES>)
     {return new OperacaoBinaria(arg1, arg2, operador.image);}
     
-    f = Fator()
+    | f = fator()
     {return f;}
 }
 
