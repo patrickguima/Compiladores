@@ -173,15 +173,16 @@ class Func{ //
 }
 
 public class Lugosi {
-public static void main(String args[]) throws Exception{
-     
-    Lugosi parser = new Lugosi(new FileInputStream(args[0]));
-    ArvoreLugosi lug = parser.Lugosi();
-    //printer(lug);
-    //printers{}
+    public static void main(String args[]) throws Exception{
+        
+        Lugosi parser = new Lugosi(new FileInputStream(args[0]));
+        ArvoreLugosi lug = parser.Lugosi();
+        //printer(lug);
+        //printers{}
+    }
 }
 
-PARSER_END(Lugosi);
+PARSER_END(Lugosi)
 
 SKIP :
 {
@@ -227,12 +228,10 @@ TOKEN :
 ///////////////////////////////////////////////////////////////////////////////////
 
 ArvoreLugosi Lugosi () : //ok
-{Main my_main; ArrayList <Func> funcoes;}
+{Main my_main; ArrayList <Func> funcoes = new ArrayList<Func>();}
 { 
 
-  my_main = Main() 
-  funcoes = (Func())?
-  <EOF> 
+  my_main = Main() (funcoes = Func())? <EOF> 
   {return new ArvoreLugosi(my_main, funcoes);}
 }
 
@@ -260,7 +259,7 @@ Comando Comando()://ok
 {Token id; Exp e; Object comandoNR; ArrayList <Comando> seqComandos; ArrayList <Exp> listExp;}
 {
 	((id = <TOKEN_ID>) comandoNR = ComandoNR())
-        {if (comandoNR instanceof Exp) return new CmdAtribuicao(id, ((Exp) comandoNR))
+        {if (comandoNR instanceof Exp) return new CmdAtribuicao(id, ((Exp) comandoNR));
          else return new CmdChamadaFuncao(id, ((ArrayList<Exp>  ) comandoNR));  }
   	|(<IF> <APARENTESES> (e = Exp()) <FPARENTESES> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <PONTOVIR>)
         {return new CmdIf(e, seqComandos);}
@@ -294,18 +293,19 @@ Object ComandoNR(): //ok
 {Object e;}
 {
 	(<ATRIBUICAO> (e = Exp()) <PONTOVIR>) 
-  	|(<APARENTESES> (e = listaExp()) <FPARENTESES> <PONTOVIR>)
+    {return e;}
 
+  	|(<APARENTESES> (e = ListaExp()) <FPARENTESES> <PONTOVIR>)
     {return e;}
 }
 
 Exp Exp(): //ok
-{Exp arg1; Exp arg2; String operador;Fator f}
+{Exp arg1; Exp arg2; String operador;Fator f;}
 {
 	(<APARENTESES> arg1 = Exp() operador = <OP> arg2 = Exp() <FPARENTESES>)
     {return new OperacaoBinaria(arg1, arg2, operador.image);}
     
-    | f = fator()
+    | f = Fator()
     {return f;}
 }
 
@@ -340,9 +340,9 @@ Fator Fator()://ok
 }
 
 ArrayList<Exp> FatNR()://ok
-{ArrayList<Exp> lista = new ArrayList<Exp>;}
+{ArrayList<Exp> lista = new ArrayList<Exp>();}
 {
-	(<APARENTESES> lista = listaExp() <FPARENTESES>)?
+	(<APARENTESES> lista = ListaExp() <FPARENTESES>)?
 
     {return lista;}
 }
