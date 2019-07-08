@@ -122,11 +122,11 @@ class FtrTokenId extends Fator{//
         this.id = id;
     }
 }
-class FtrListaExp extends Fator{//
+class FtrExpPar extends Fator{//
 	String id;
 	ArrayList <Exp> listExp;
 
-    FtrListaExp(String id, ArrayList <Exp> listExp){
+    FtrExpPar(String id, ArrayList <Exp> listExp){
         this.id = id;
         this.listExp = listExp;
     }
@@ -148,7 +148,7 @@ class FtrTipo extends Fator{//
     }
 }
 
-class listaExp{//
+class ListaExp{//
     Exp e;
 
     listaExp(Exp e){
@@ -257,7 +257,7 @@ ArrayList <Comando> SeqComandos(): //ok
     {return c;}
 }
 Comando Comando()://ok
-{Token id; Exp e; Object comandoNR, ArrayList <Comando> seqComandos;}
+{Token id; Exp e; Object comandoNR; ArrayList <Comando> seqComandos; ArrayList <Exp> listExp;}
 {
 	((id = <TOKEN_ID>) comandoNR = ComandoNR())
         {if (comandoNR instanceof Exp) return new CmdAtribuicao(id, ((Exp) comandoNR))
@@ -273,18 +273,19 @@ Comando Comando()://ok
   	|(<PRINT> <APARENTESES> (e = Exp()) <FPARENTESES> <PONTOVIR>)
         {return new CmdPrint(e);}
 }
-
-void Func():
-{ ArrayList<Func> func = new ArrayList<Func> (); String id; String tipo; ArrayList <ListaArg> argumentos;ArrayList <VarDecl> vd;ArrayList <Comando> seqComandos;}
+ArrayList<Func> Func(): //ok
+{ ArrayList<Func> func = new ArrayList<Func> (); String id; String tipo; ArrayList <ListaArg> argumentos;ArrayList <VarDecl> varD;ArrayList <Comando> seqComandos;}
 {
-    (<FUNCTION> <TIPO> <TOKEN_ID> <APARENTESES> (listaArg())? <FPARENTESES> <ACHAVES> VarDecl() SeqComandos() <FCHAVES> {func.add(new Func(tipo, id, argumentos, vd, seqComandos)); })+
+    (<FUNCTION> tipo = Tipo() id = <TOKEN_ID> <APARENTESES> ( argumentos = ListaArg()) <FPARENTESES>
+        <ACHAVES> (varD = VarDecl()) (seqComandos =  SeqComandos()) <FCHAVES> {func.add(new Func(tipo, id, argumentos, varD, seqComandos));})+
     {return func;}
 }
 
-void listaArg()://falta
-{}
+ArrayList<ListaArg> ListaArg(): //ok
+{ArrayList<ListaArg> lista = new ArrayList<ListaArg>();String tipo1; String tipo2; Token id; Token id1;}
 {
-  <TIPO> <TOKEN_ID> (<PONTOVIR> listaArg())?
+    tipo1 = <TIPO> id1 = <TOKEN_ID> (<VIRGULA> tipo2 = <TIPO> id2 = <TOKEN_ID> {a.add(new ListaArg(tipo2, id2));})*
+    {lista.add(0, new ListaArg(tipo1, id1)); return lista;}
 }
 
 
@@ -308,40 +309,52 @@ Exp Exp(): //ok
     {return f;}
 }
 
-void listaExp():
-{}
+ArrayList<Exp> ListaExp()://ok
+{Exp e; Exp ex; ArrayList <Exp> lista2 = new ArrayList <Exp>();}
 {
-  exp() listaExpNR()
+  e = Exp() (<VIRGULA> ex = Exp() {lista2.add(ex);})*
+  {lista2.add(0, e); return lista2;}
 }
 
-void listaExpNR():
+/*void listaExpNR()://talvez nao precise
 {}
 {
   (<VIRGULA> exp() listaExpNR())?
-}
+}*/
 
 
-void fator():
-{}
+Fator Fator()://ok
+{Token id; Token num; Token tipo; ArrayList<Exp> fNR;}
 {
-	(<TOKEN_ID> fatNR())
-	|<TOKEN_NUMLITERAL> | <TRUE> | <FALSE> 
+	(id = <TOKEN_ID> fNR = FatNR())
+        {if(fNR.isEmpty()) return new FtrTokenId(id.image);
+            else return new FtrExpPar(id.image, fNR);}
+
+	|num = <TOKEN_NUMLITERAL> 
+        {return new FtrNumLiteral(num.image, fNR);}
+    
+    | tipo = <TRUE> 
+        {return new FtrTipo(tipo.image);}
+    | tipo = <FALSE> 
+        {return new FtrTipo(tipo.image);}
 }
 
-void fatNR():
-{}
+ArrayList<Exp> FatNR()://ok
+{ArrayList<Exp> lista = new ArrayList<Exp>;}
 {
-	(<APARENTESES> (listaExp())?  <FPARENTESES>)?
+	(<APARENTESES> lista = listaExp() <FPARENTESES>)?
+
+    {return lista;}
 }
 
 
-Main Main ():
+Main Main (): //ok
 { ArrayList <VarDecl> varD; ArrayList <Comando> comandos; }
 {
  <MAIN> <ACHAVES> 
  
-  VarDecl()
-  SeqComandos()
+  varD = VarDecl()
+  comandos = SeqComandos()
 
  <FCHAVES>
  { return new Main(varD, comandos); }
