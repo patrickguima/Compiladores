@@ -1,0 +1,13 @@
+main{ 
+var int Valor;
+var bool FLAG;
+var int Aa_;
+Valor := 1000;
+FLAG := true;
+
+while ( true) 
+do {
+	Valor := ((valor + 1.99) / 10.1E-3);
+	Aa_ := ((20*2.05) / (2+2));
+};
+}
