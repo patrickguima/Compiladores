@@ -1,3 +1,3 @@
 javacc LugostiToC.jj
 javac *. java
-java Lugosi test.lug
+java Lugosi test.lug > saida.txt
