@@ -3,11 +3,11 @@ import java.io.*;
 import java.util.*;
 
 class ArvoreLugosi{//
-	Main my_main;
+	Main main;
 	ArrayList <Func> funcoes;
 
     ArvoreLugosi(Main m, ArrayList<Func> f){
-        this.my_main = m; 
+        this.main = m; 
         this.funcoes = f;
     }
 }
@@ -183,27 +183,38 @@ class ListaArg{
 }
 
 public class Lugosi {
-    public static void main(String args[]) throws Exception{
+    public static void main(String args[]) throws Exception{//revisado
         
         Lugosi parser = new Lugosi(new FileInputStream(args[0]));
         ArvoreLugosi lug = parser.Lugosi();
         printerInicio(lug);
-        //printers{}
     }
 
-    public static void printerInicio(ArvoreLugosi lug){
+    public static void printerInicio(ArvoreLugosi lug){//revisado
         
         System.out.print("#include <iostream>\n");
-        System.out.print("\nusing namespace std;\n");
+        System.out.println("\nusing namespace std;");
 
-        for(Func f : lug.funcoes){ //para imprimir as funcoes
+        for(Func f : lug.funcoes){ 
             printerFunc(f);
         }
 
-        //printerMain
+        printerMain(lug.main);
     }
 
-    public static void printerFunc(Func f){
+    public static void printerMain(Main main){//revisado
+		System.out.print("int main()"); 
+		System.out.println("{ ");
+
+		for(VarDecl vardecl: main.varD){
+			printerVarDecl(vardecl);
+		}
+		printerSeqComandos(main.comandos);
+		
+		System.out.println("return 0; \n}");
+	}
+
+    public static void printerFunc(Func f){//revisado
         int cont = 0;
         System.out.print(f.tipo + " ");
         System.out.print(f.id + " (");
@@ -218,17 +229,17 @@ public class Lugosi {
 
         System.out.println("){");
 
-        for(VarDecl v : f.vd){ //printa declaracao de variaveis
+        for(VarDecl v : f.vd){ 
             printerVarDecl(v);
         }
 
         for(Comando c : f.seqComandos){
-            printerComando(c);
+            printerCmd(c);
         }
         System.out.println("}");
     }
 
-    public static void printerArgumentos(ListaArg arg){
+    public static void printerArgumentos(ListaArg arg){//revisado
         	System.out.print(arg.tipo + " ");
 		    System.out.print(arg.id);
     }
@@ -237,16 +248,176 @@ public class Lugosi {
         System.out.println(v.tipo +" "+ v.var +"; ");
     }
 
-    public static void printerComando(Comando c){
+    public static void printerCmd(Comando c){//revisado
+        
         if (c instanceof CmdAtribuicao){
 			printerCmdAtribuicao(c);
 		}
+        else if (c instanceof CmdChamadaFuncao){
+			printerCmdChamadaFuncao(c);
+		}
+		else if (c instanceof CmdIf){
+			printerCmdIf(c);
+		}
+		else if (c instanceof CmdWhile){
+			printerCmdWhile(c);
+		}
+		else if (c instanceof CmdDoWhile){
+			printerCmdDoWhile(c);
+		}
+		else if (c instanceof CmdReturn){
+			printerCmdReturn(c);
+		}
+		else if (c instanceof CmdPrint){
+			printerCmdPrint(c);
+		}
+    }
+
+    public static void printerCmdNR(Object e){//revisado
+        if(e instanceof Exp){
+            System.out.print("= ");
+            printerExp((Exp) e);
+            System.out.println(";");
+        }
+		else if (e instanceof ArrayList){
+			System.out.print(" (");
+			int tamanhoExp = ((ArrayList <Exp>)e).size(); 
+			int cont = 0;
+		
+			for (Exp expressao : ((ArrayList <Exp>)e)) {
+				printerExp(expressao);
+				if (tamanhoExp > 1 && cont < tamanhoExp -1){
+					System.out.print(", ");
+				}
+				cont+= 1;
+			}
+			System.out.print(")");
+			System.out.println("; ");		
+		}
     }
     
-    public static void printerCmdAtribuicao(Comando c){
+    public static void printerCmdAtribuicao(Comando c){//revisado
 		System.out.print(((CmdAtribuicao) c).var + " ");
-		//printerComandoNR(((CAtrib) c).e);
+		printerCmdNR(((CmdAtribuicao) c).e);
     }
+
+    public static void printerCmdChamadaFuncao(Comando c){//revisado
+		System.out.print(((CmdChamadaFuncao) c).nomeFuncao + " ");
+		printerCmdNR(((CmdChamadaFuncao) c).argumentos);
+	}
+
+    public static void printerCmdIf(Comando c){//revisado
+        System.out.print("if (");
+		printerExp(((CmdIf) c).exp);
+		System.out.print(") ");
+		System.out.println("{ ");
+		printerSeqComandos(((CmdIf) c).then); 
+		System.out.print("}");
+		System.out.println(";");
+    }
+
+    public static void printerCmdWhile(Comando c){//revisado
+        System.out.print("while ");
+		System.out.print("(");
+		printerExp((((CmdWhile) c).exp));
+		System.out.print(") ");
+		System.out.print("do ");
+		System.out.println("{ ");
+		printerSeqComandos(((CmdWhile) c).comandos); 
+		System.out.print("}");
+		System.out.println(";");
+    }
+
+    public static void printerCmdDoWhile(Comando c){//revisado
+        System.out.print("do ");
+		System.out.println("{ ");
+		printerSeqComandos(((CmdDoWhile) c).comandos); 
+		System.out.print("}");
+		System.out.print("while ");
+		System.out.print("(");
+		printerExp(((CmdDoWhile) c).exp);
+		System.out.print(")");
+		System.out.println(";");
+    }
+
+    public static void printerCmdReturn(Comando c){//revisado
+        System.out.print("return ");	
+		printerExp(((CmdReturn) c).exp);
+		System.out.println(";");
+    }
+
+    public static void printerCmdPrint(Comando c){//revisar 
+        System.out.print("cout << ");
+		printerExp(((CmdPrint) c).exp);
+		System.out.print("<<");
+		System.out.println(";");
+    }
+
+    public static void printerSeqComandos(ArrayList <Comando> comandos){//revisado
+		for (Comando c : comandos) {
+			printerCmd(c);
+		}
+	}
+
+
+    public static void printerExp(Exp e){//revisado
+        if(e instanceof Fator){
+            printerFtr(e);
+        }
+        else{
+            printerExpOperador(e);
+        }
+    }
+
+    public static void printerFtr(Exp e){//revisado
+        if (e instanceof FtrExpPar){
+			printerFtrExpPar(e);
+		}
+		else if (e instanceof FtrNumLiteral){
+			printerFtrNumLiteral(e);
+		}
+		else if (e instanceof FtrTipo){
+			printerFtrTipo(e);
+		}
+		else if (e instanceof FtrTokenId){
+			printerFtrTokenId(e);
+		}
+    }
+
+    public static void printerFtrExpPar(Exp e){//revisado
+        System.out.print( ((FtrExpPar) e).id + " ");
+		
+		int tamanhoExp = (((FtrExpPar)e).listExp).size(); 
+		int cont = 0;
+		
+		for (Exp e1 : ((FtrExpPar)e).listExp){
+			printerFtr(e1);
+			if (tamanhoExp > 1 && cont < tamanhoExp-1){
+				System.out.print(", ");
+			}
+			cont+= 1;
+		}
+    }
+
+    public static void printerFtrTokenId(Exp e){//revisado
+        System.out.print( ((FtrTokenId) e).id + " ");
+    }
+
+    public static void printerFtrNumLiteral(Exp e){//revisado
+		System.out.print( ((FtrNumLiteral) e).numLiteral + " ");
+	}
+
+    public static void printerExpOperador(Exp e){ //revisado
+        System.out.print("(");
+	  	printerExp(((ExpOperador)e).arg1);
+	  	System.out.print(((ExpOperador) e).operador + " ");
+	  	printerExp(((ExpOperador)e).arg2);	
+	  	System.out.print(")");
+    }
+
+    public static void printerFtrTipo(Exp e){//revisado
+		System.out.print(((FtrTipo) e).tipo + " ");
+	}
 
 }
 
@@ -296,11 +467,11 @@ TOKEN :
 ///////////////////////////////////////////////////////////////////////////////////
 
 ArvoreLugosi Lugosi () : //ok
-{Main my_main; ArrayList <Func> funcoes = new ArrayList<Func>();}
+{Main main; ArrayList <Func> funcoes = new ArrayList<Func>();}
 { 
 
-  my_main = Main() (funcoes = Func())? <EOF> 
-  {return new ArvoreLugosi(my_main, funcoes);}
+  main = Main() (funcoes = Func())? <EOF> 
+  {return new ArvoreLugosi(main, funcoes);}
 }
 
 ArrayList <VarDecl> VarDecl(): //ok
