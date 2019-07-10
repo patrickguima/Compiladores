@@ -23,11 +23,11 @@ class Main{//
 }
 
 class VarDecl{ //possivel erro - Tipo tipo ou String tipo
-	Tipo tipo;
+	String tipo;
 	String var;
 
     VarDecl(Token id, String tipo){
-        this.id = id.image;
+        this.var = id.image;
         this.tipo = tipo;
     }
 }
@@ -75,7 +75,7 @@ class CmdWhile extends Comando{//
 	ArrayList <Comando> comandos;
 
     CmdWhile(Exp e, ArrayList <Comando> seqComandos){
-        this.esp = e;
+        this.exp = e;
         this.comandos = seqComandos;
     }
 }
@@ -83,7 +83,7 @@ class CmdDoWhile extends Comando{//
 	ArrayList <Comando> comandos;
 	Exp exp;
 
-    CmdDoWhile(ArrayList <Comando> seqComandos, Exp e){
+    CmdDoWhile(Exp e, ArrayList <Comando> seqComandos){
         this.comandos = seqComandos;
         this.exp = e;
     }
@@ -151,7 +151,7 @@ class FtrTipo extends Fator{//
 class ListaExp{//
     Exp e;
 
-    listaExp(Exp e){
+    ListaExp(Exp e){
         this.e = e;
     }
 }
@@ -172,14 +172,82 @@ class Func{ //
     }
 }
 
+class ListaArg{
+    String tipo;
+    String id;
+
+    ListaArg(String tipo, Token id){
+        this.tipo = tipo;
+        this.id = id.image;
+    }
+}
+
 public class Lugosi {
     public static void main(String args[]) throws Exception{
         
         Lugosi parser = new Lugosi(new FileInputStream(args[0]));
         ArvoreLugosi lug = parser.Lugosi();
-        //printer(lug);
+        printerInicio(lug);
         //printers{}
     }
+
+    public static void printerInicio(ArvoreLugosi lug){
+        
+        System.out.print("#include <iostream>\n");
+        System.out.print("\nusing namespace std;\n");
+
+        for(Func f : lug.funcoes){ //para imprimir as funcoes
+            printerFunc(f);
+        }
+
+        //printerMain
+    }
+
+    public static void printerFunc(Func f){
+        int cont = 0;
+        System.out.print(f.tipo + " ");
+        System.out.print(f.id + " (");
+
+        for(ListaArg arg: f.argumentos){
+            printerArgumentos(arg);
+            if((f.argumentos).size() > 1 && cont < (f.argumentos).size() - 1){
+                System.out.print(", ");
+            }
+            cont+=1;
+        }
+
+        System.out.println("){");
+
+        for(VarDecl v : f.vd){ //printa declaracao de variaveis
+            printerVarDecl(v);
+        }
+
+        for(Comando c : f.seqComandos){
+            printerComando(c);
+        }
+        System.out.println("}");
+    }
+
+    public static void printerArgumentos(ListaArg arg){
+        	System.out.print(arg.tipo + " ");
+		    System.out.print(arg.id);
+    }
+
+    public static void printerVarDecl(VarDecl v){
+        System.out.println(v.tipo +" "+ v.var +"; ");
+    }
+
+    public static void printerComando(Comando c){
+        if (c instanceof CmdAtribuicao){
+			printerCmdAtribuicao(c);
+		}
+    }
+    
+    public static void printerCmdAtribuicao(Comando c){
+		System.out.print(((CmdAtribuicao) c).var + " ");
+		//printerComandoNR(((CAtrib) c).e);
+    }
+
 }
 
 PARSER_END(Lugosi)
@@ -236,9 +304,9 @@ ArvoreLugosi Lugosi () : //ok
 }
 
 ArrayList <VarDecl> VarDecl(): //ok
-{ ArrayList <VarDecl> a = new ArrayList<VarDecl> (); Tipo tipo; String var; }
+{ ArrayList <VarDecl> a = new ArrayList<VarDecl> (); String tipo; String var; Token id;}
 {
-	(<VAR> t = Tipo() id = <TOKEN_ID> <PONTOVIR> {a.add(new VarDecl(id, tipo));})*
+	(<VAR> tipo = Tipo() id = <TOKEN_ID> <PONTOVIR> {a.add(new VarDecl(id, tipo));})*
     {return a;}
 }
 
@@ -263,9 +331,9 @@ Comando Comando()://ok
          else return new CmdChamadaFuncao(id, ((ArrayList<Exp>  ) comandoNR));  }
   	|(<IF> <APARENTESES> (e = Exp()) <FPARENTESES> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <PONTOVIR>)
         {return new CmdIf(e, seqComandos);}
-  	|(<WHILE> <APARENTESES> (e = Exp()) <FPARENTESES> <DO> <ACHAVES> SeqComandos() <FCHAVES> <PONTOVIR>)
+  	|(<WHILE> <APARENTESES> (e = Exp()) <FPARENTESES> <DO> <ACHAVES> (seqComandos =  SeqComandos()) <FCHAVES> <PONTOVIR>)
         {return new CmdWhile(e, seqComandos);}
-  	|(<DO> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <WHILE> <APARENTESES> e = Exp() <FPARENTESES> <PONTOVIR>)
+  	|(<DO> <ACHAVES> (seqComandos = SeqComandos()) <FCHAVES> <WHILE> <APARENTESES> (e = Exp()) <FPARENTESES> <PONTOVIR>)
         {return new CmdDoWhile(e, seqComandos);}
   	|(<RETURN> (e = Exp()) <PONTOVIR>)
         {return new CmdReturn(e);}
@@ -273,17 +341,18 @@ Comando Comando()://ok
         {return new CmdPrint(e);}
 }
 ArrayList<Func> Func(): //ok
-{ ArrayList<Func> func = new ArrayList<Func> (); String id; String tipo; ArrayList <ListaArg> argumentos;ArrayList <VarDecl> varD;ArrayList <Comando> seqComandos;}
+{ ArrayList<Func> func = new ArrayList<Func> (); Token id; String tipo; ArrayList <ListaArg> argumentos;ArrayList <VarDecl> varD;ArrayList <Comando> seqComandos;}
 {
     (<FUNCTION> tipo = Tipo() id = <TOKEN_ID> <APARENTESES> ( argumentos = ListaArg()) <FPARENTESES>
-        <ACHAVES> (varD = VarDecl()) (seqComandos =  SeqComandos()) <FCHAVES> {func.add(new Func(tipo, id, argumentos, varD, seqComandos));})+
+        <ACHAVES> (varD = VarDecl()) (seqComandos =  SeqComandos()) <FCHAVES> {func.add(new Func( id, tipo, argumentos, varD, seqComandos));})+
+                                                                            
     {return func;}
 }
 
 ArrayList<ListaArg> ListaArg(): //ok
-{ArrayList<ListaArg> lista = new ArrayList<ListaArg>();String tipo1; String tipo2; Token id; Token id1;}
+{ArrayList<ListaArg> lista = new ArrayList<ListaArg>(); String tipo1; String tipo2; Token id1; Token id2;}
 {
-    tipo1 = <TIPO> id1 = <TOKEN_ID> (<VIRGULA> tipo2 = <TIPO> id2 = <TOKEN_ID> {a.add(new ListaArg(tipo2, id2));})*
+    tipo1 = Tipo() id1 = <TOKEN_ID> (<VIRGULA> tipo2 = Tipo() id2 = <TOKEN_ID> {lista.add(new ListaArg(tipo2, id2));})*
     {lista.add(0, new ListaArg(tipo1, id1)); return lista;}
 }
 
@@ -300,10 +369,10 @@ Object ComandoNR(): //ok
 }
 
 Exp Exp(): //ok
-{Exp arg1; Exp arg2; String operador;Fator f;}
+{Exp arg1; Exp arg2; Token operador;Fator f;}
 {
 	(<APARENTESES> arg1 = Exp() operador = <OP> arg2 = Exp() <FPARENTESES>)
-    {return new OperacaoBinaria(arg1, arg2, operador.image);}
+    {return new ExpOperador(arg1, arg2, operador.image);}
     
     | f = Fator()
     {return f;}
@@ -331,7 +400,7 @@ Fator Fator()://ok
             else return new FtrExpPar(id.image, fNR);}
 
 	|num = <TOKEN_NUMLITERAL> 
-        {return new FtrNumLiteral(num.image, fNR);}
+        {return new FtrNumLiteral(num.image);}
     
     | tipo = <TRUE> 
         {return new FtrTipo(tipo.image);}
